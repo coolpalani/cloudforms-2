@@ -9,5 +9,5 @@ spec:
     - ReadWriteOnce
   nfs:
     path: /srv/nfs/cfvolumes
-    server: 10.19.0.216
+    server: 192.168.0.254
   persistentVolumeReclaimPolicy: Recycle
