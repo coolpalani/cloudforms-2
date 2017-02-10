@@ -1,0 +1,54 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: CloudForms{{ ':' }} LATAM Red Hat Forum 2016
+  hosts: localhost
+  connection: local
+  vars:
+     openshift_master: https://openshift.example.com:8443
+     openshift_domain: example.com
+     openshift_domain_cloudapps: cloudapps.{{ openshift_domain }}
+     username: demo
+     password: r3dh4t1!
+     cloudforms_namespace: cloud
+  tasks: 
+     - name: Delete any previously existing serviceaccounts
+       command: oc delete serviceaccount/sacloudforms --namespace {{ cloudforms_namespace }}
+       ignore_errors: True
+       tags:
+          - create
+          - cleanup
+ 
+     - name: Delete any previously existing namespaces 
+       command: oc delete project {{ cloudforms_namespace }}
+       ignore_errors: True
+       tags: 
+          - create
+          - cleanup
+
+     - name: Create a Project{{ ':' }} {{ cloudforms_namespace }} 
+       command: oadm new-project {{ cloudforms_namespace }} --display-name="CloudForms{{ ':' }} LATAM Red Hat Forum 2016" --admin={{ username }}
+       register: create_namespace
+       until: create_namespace.rc == 0
+       retries: 10
+       delay: 10
+       tags: create
+
+     - name: Create a Service Account to relax security permissions
+       command: oc create serviceaccount sacloudforms --namespace {{ cloudforms_namespace }}
+       tags: create
+   
+     - name: Allow this pod to run in a relax Security Context
+       command: oadm policy add-scc-to-user anyuid --serviceaccount sacloudforms --namespace {{ cloudforms_namespace }}
+       tags: create
+
+     - name: Allow this pod to run in a Privileged Security Context
+       command: oadm policy add-scc-to-user privileged system:serviceaccount:{{ cloudforms_namespace }}:sacloudforms
+       tags: create
+
+     - name: Create the application based on a template
+       command: oc new-app --file=templates/cfme-template.yaml --param=NAME=cloudforms --namespace {{ cloudforms_namespace }}
+       tags: create
+
+#     - name: Create a friendly route tower.{{ openshift_domain_cloudapps }}
+#       command: oc expose service/tower --hostname=tower.{{ openshift_domain_cloudapps }} --namespace {{ cloudforms_namespace }}
+#       tags: create
