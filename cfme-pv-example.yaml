@@ -8,6 +8,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   nfs:
-    path: /opt/nfs/volumes
+    path: /srv/nfs/cfvolumes
     server: 10.19.0.216
   persistentVolumeReclaimPolicy: Recycle
