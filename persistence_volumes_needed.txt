@@ -1,0 +1,13 @@
+These are the pods with the following persistence needs:
+
+postgresql
+
+deploymentconfigs/postgresql
+  pvc/postgresql (waiting for 1GiB allocation) as cfme-pgdb-volume
+    mounted at /var/lib/pgsql/data
+	
+cloudforms
+
+deploymentconfigs/cloudforms
+  pvc/cloudforms (waiting for 1GiB allocation) as cfme-app-volume
+    mounted at /persistent	

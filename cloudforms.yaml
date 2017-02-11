@@ -33,22 +33,34 @@
        delay: 10
        tags: create
 
-     - name: Create a Service Account to relax security permissions
-       command: oc create serviceaccount sacloudforms --namespace {{ cloudforms_namespace }}
-       tags: create
-   
-     - name: Allow this pod to run in a relax Security Context
-       command: oadm policy add-scc-to-user anyuid --serviceaccount sacloudforms --namespace {{ cloudforms_namespace }}
-       tags: create
-
      - name: Allow this pod to run in a Privileged Security Context
-       command: oadm policy add-scc-to-user privileged system:serviceaccount:{{ cloudforms_namespace }}:sacloudforms
+       command: oadm policy add-scc-to-user privileged system:serviceaccount:{{ cloudforms_namespace }}:default
        tags: create
 
      - name: Create the application based on a template
        command: oc new-app --file=templates/cfme-template.yaml --param=NAME=cloudforms --namespace {{ cloudforms_namespace }}
        tags: create
 
-#     - name: Create a friendly route tower.{{ openshift_domain_cloudapps }}
-#       command: oc expose service/tower --hostname=tower.{{ openshift_domain_cloudapps }} --namespace {{ cloudforms_namespace }}
-#       tags: create
+     - name: Remove the persistence volume from postgresql. It will be add that later.
+       command: oc volume deploymentconfig/postgresql --name=cfme-pgdb-volume --remove --namespace {{ cloudforms_namespace }}
+       tags: 
+          - create
+          - remove_persistence
+
+     - name: Remove the persistence volume from cloudforms. It will be add that later.
+       command: oc volume deploymentconfig/cloudforms --name=cfme-app-volume --remove --namespace {{ cloudforms_namespace }}
+       tags:
+          - create
+          - remove_persistence
+
+     - name: Remove current router
+       command: oc delete route/cloudforms --namespace {{ cloudforms_namespace }}
+       tags:
+          - create
+          - recreate_router
+
+     - name: Create a friendly route tower.{{ openshift_domain_cloudapps }}
+       command: oc expose service/cloudforms --hostname=cloudforms.{{ openshift_domain_cloudapps }} --namespace {{ cloudforms_namespace }}
+       tags:
+          - create
+          - recreate_router
