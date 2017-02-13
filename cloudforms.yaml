@@ -33,17 +33,17 @@
        command: oc new-app --file=templates/cfme-template.yaml --param=NAME=cloudforms --namespace {{ cloudforms_namespace }}
        tags: create
 
-     - name: Remove the persistence volume from postgresql. It will be add that later.
-       command: oc volume deploymentconfig/postgresql --name=cfme-pgdb-volume --remove --namespace {{ cloudforms_namespace }}
-       tags: 
-          - create
-          - remove_persistence
+#     - name: Remove the persistence volume from postgresql. It will be add that later.
+#       command: oc volume deploymentconfig/postgresql --name=cfme-pgdb-volume --remove --namespace {{ cloudforms_namespace }}
+#       tags: 
+#          - create
+#          - remove_persistence
 
-     - name: Remove the persistence volume from cloudforms. It will be add that later.
-       command: oc volume deploymentconfig/cloudforms --name=cfme-app-volume --remove --namespace {{ cloudforms_namespace }}
-       tags:
-          - create
-          - remove_persistence
+#     - name: Remove the persistence volume from cloudforms. It will be add that later.
+#       command: oc volume deploymentconfig/cloudforms --name=cfme-app-volume --remove --namespace {{ cloudforms_namespace }}
+#       tags:
+#          - create
+#          - remove_persistence
 
      - name: Remove current router
        command: oc delete route/cloudforms --namespace {{ cloudforms_namespace }}
