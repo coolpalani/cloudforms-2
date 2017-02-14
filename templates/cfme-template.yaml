@@ -389,7 +389,7 @@ parameters:
     required: true
     displayName: "Application Database Region"
     description: "Database region that will be used for application."
-    value: "0"
+    value: "1"
   -
     name: "MEMCACHED_SERVICE_NAME"
     required: true
