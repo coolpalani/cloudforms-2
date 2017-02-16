@@ -21,7 +21,7 @@
        command: oadm new-project {{ cloudforms_namespace }} --display-name="CloudForms{{ ':' }} LATAM Red Hat Forum 2016" --admin={{ username }}
        register: create_namespace
        until: create_namespace.rc == 0
-       retries: 10
+       retries: 60
        delay: 10
        tags: create
 
@@ -56,3 +56,10 @@
        tags:
           - create
           - recreate_router
+
+     - name: Specify a Router Termination due SSL{{ ':' }} Passthrough
+       command: oc patch route/cloudforms --patch='{"spec"{{ ':' }}{"tls"{{ ':' }}{"termination"{{ ':' }} "passthrough"}}}' --namespace {{ cloudforms_namespace }}
+       tags:
+          - create
+          - recreate_router 
+
