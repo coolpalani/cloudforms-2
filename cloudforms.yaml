@@ -8,7 +8,7 @@
      openshift_domain_cloudapps: cloudapps.{{ openshift_domain }}
      username: demo
      password: r3dh4t1!
-     cloudforms_namespace: management
+     cloudforms_namespace: cloudforms
   tasks: 
      - name: Delete any previously existing namespaces 
        command: oc delete project {{ cloudforms_namespace }}
