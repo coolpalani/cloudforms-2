@@ -52,7 +52,7 @@
           - recreate_router
 
      - name: Create a friendly route cloudforms.{{ openshift_domain_cloudapps }}
-       command: oc expose service/cloudforms --hostname=cloudforms.{{ openshift_domain_cloudapps }} --namespace {{ cloudforms_namespace }}
+       command: oc expose service/cloudforms --hostname=cloudforms.{{ openshift_domain_cloudapps }} --port=443 --namespace {{ cloudforms_namespace }}
        tags:
           - create
           - recreate_router
