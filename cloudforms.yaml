@@ -119,7 +119,7 @@
          HEADER_Content-Type: application/json
          validate_certs: no
          return_content: yes
-         url: "{{ cloudforms.{{ openshift_domain_cloudapps } }}/api/users/"
+         url: "{{ cloudforms.{{ openshift_domain_cloudapps }} }}/api/users/"
          user: "{{ cloudforms_username }}"
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
