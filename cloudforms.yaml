@@ -7,8 +7,10 @@
      openshift_domain: example.com
      openshift_domain_cloudapps: cloudapps.{{ openshift_domain }}
      username: demo
-     password: r3dh4t1!
+     password: smartvm
      cloudforms_namespace: cloudforms
+     cloudforms_username: admin
+     cloudforms_http_type: https
   tasks: 
      - name: Delete any previously existing namespaces 
        command: oc delete project {{ cloudforms_namespace }}
@@ -52,7 +54,7 @@
           - recreate_router
 
      - name: Create a friendly route cloudforms.{{ openshift_domain_cloudapps }}
-       command: oc expose service/cloudforms --hostname=cloudforms.{{ openshift_domain_cloudapps }} --port=443 --namespace {{ cloudforms_namespace }}
+       command: oc expose service/cloudforms --hostname=cloudforms.{{ openshift_domain_cloudapps }} --port=https --namespace {{ cloudforms_namespace }}
        tags:
           - create
           - recreate_router
@@ -62,4 +64,49 @@
        tags:
           - create
           - recreate_router 
+     
+     - name: Fetch CloudForms Port
+       command: oc get service/cloudforms --output jsonpath='{..spec.ports[?(@.name=="{{ cloudforms_http_type }}")].port}' --namespace {{ cloudforms_namespace }}
+       register: cloudforms_port
+       tags: 
+          - install
 
+     - name: Fetch CloudForms Address
+       command: oc get service/cloudforms --output jsonpath='{..spec.clusterIP}' --namespace {{ cloudforms_namespace }}
+       register: cloudforms_ip
+       tags: 
+          - install
+
+     - name: Define CloudForms URL
+       set_fact: cloudforms_url='cloudforms.{{ cloudforms_namespace }}.svc.cluster.local:{{ cloudforms_port.stdout }}'
+       tags: 
+          - install
+
+     - name: Define CloudForms FULL URL
+       set_fact: cloudforms_full_url='{{ cloudforms_http_type }}{{ ':' }}//{{ cloudforms_url }}'
+       tags:
+          - install
+
+     - name: Wait for CloudForms to be up{{ ':' }} {{ cloudforms_full_url }}
+       uri: url='{{ cloudforms_full_url }}' validate_certs=no status_code=200 
+       register: cloudforms_wait
+       until: cloudforms_wait.status == 200
+       retries: 60
+       delay: 10
+       tags: 
+          - install
+
+     - name: Fetch a Token from Management Infrastructure
+       command: oc serviceaccounts get-token management-admin --namespace management-infra
+       register: management_infra_token
+       tags: 
+          - install
+
+     - name: Submit a new Provider to CloudForms
+       uri: method=POST body_format=json url="{{ cloudforms_full_url }}/api/providers"  status_code=200
+            HEADER_Content-type="application/json" HEADER_Accept="application/json"
+            user={{ cloudforms_username }} password={{ password }} force_basic_auth=yes validate_certs=no return_content=yes
+            body="{ \"type\"      {{ ':' }} \"ManageIQ{{ ':' }}{{ ':' }}Providers{{ ':' }}{{ ':' }}Openshift{{ ':' }}{{ ':' }}ContainerManager\", \"name\"      {{ ':' }} \"OpenShift Container Platform 3.4\", \"hostname\"  {{ ':' }} \"{{ cloudforms_url }}\", \"ipaddress\" {{ ':' }} \"{{ cloudforms_ip.stdout }}\", \"credentials\" {{ ':' }} {  \"auth_key\"   {{ ':' }} \"{{ management_infra_token.stdout }}\"  } }"
+       register: cloudforms_response
+       tags: 
+          - install
