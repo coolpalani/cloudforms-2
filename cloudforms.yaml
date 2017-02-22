@@ -7,9 +7,10 @@
      openshift_domain: example.com
      openshift_domain_cloudapps: cloudapps.{{ openshift_domain }}
      username: demo
-     password: smartvm
+     password: r3dh4t1!
      cloudforms_namespace: cloudforms
      cloudforms_username: admin
+     cloudforms_password: smartvm
      cloudforms_http_type: https
   tasks: 
      - name: Delete any previously existing namespaces 
@@ -110,3 +111,21 @@
        register: cloudforms_response
        tags: 
           - install
+     
+     - name: Adding forumadmin user to CloudForms
+       uri:
+         method: POST
+         body_format: json
+         HEADER_Content-Type: application/json
+         validate_certs: no
+         return_content: yes
+         url: "{{ cloudforms.{{ openshift_domain_cloudapps } }}/api/users/"
+         user: "{{ cloudforms_username }}"
+         password: "{{ cloudforms_password }}"
+         force_basic_auth: yes
+         status_code: 200
+         body: '{"name": "Forum Admin","userid": "forumadmin","password": "r3dh4t1!","email": "forumadmin@{{ openshift_domain}}","group": {"id": 2}}'
+       tags:
+            - install
+            - configcloudforms
+            - createuserscloudforms
