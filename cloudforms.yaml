@@ -124,8 +124,27 @@
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
          status_code: 200
-         body: '{"name": "Forum Admin","userid": "forumadmin","password": "r3dh4t1!","email": "forumadmin@{{ openshift_domain}}","group": {"id": 2}}'
+         body: '{"name": "Forum Admin","userid": "forumadmin","password": "r3dh4t1!","email": "forumadmin@{{ openshift_domain }}","group": {"id": 2}}'
        tags:
             - install
             - configcloudforms
             - createuserscloudforms
+            
+       
+     - name: Adding Red Hat Forum LATAM 2016 Tenant to CloudForms
+       uri:
+         method: POST
+         body_format: json
+         HEADER_Content-Type: application/json
+         validate_certs: no
+         return_content: yes
+         url: "{{ cloudforms.{{ openshift_domain_cloudapps }} }}/api/tenants/"
+         user: "{{ cloudforms_username }}"
+         password: "{{ cloudforms_password }}"
+         force_basic_auth: yes
+         status_code: 200
+         body: '{"name": "RHT Forum Tenant","description": "Red Hat Forum LATAM 2016 Tenant","parent": {"href": "https://cloudforms.{{ openshift_domain_cloudapps }}/api/tenants/1"}}'
+       tags:
+            - install
+            - configcloudforms
+            - createtenantscloudforms      
