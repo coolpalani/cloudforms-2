@@ -112,7 +112,7 @@
          HEADER_Content-Type: application/json
          validate_certs: no
          return_content: yes
-         url: "cloudforms.default.svc.cluster.local/api/users/"
+         url: "{{ cloudforms_full_url }}/api/users/"
          user: "{{ cloudforms_username }}"
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
@@ -131,7 +131,7 @@
          HEADER_Content-Type: application/json
          validate_certs: no
          return_content: yes
-         url: "cloudforms.default.svc.cluster.local/api/tenants/"
+         url: "{{ cloudforms_full_url }}/api/tenants/"
          user: "{{ cloudforms_username }}"
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
@@ -149,7 +149,7 @@
          HEADER_Content-Type: application/json
          validate_certs: no
          return_content: yes
-         url: "cloudforms.default.svc.cluster.local/api/providers/"
+         url: "{{ cloudforms_full_url }}/api/providers/"
          user: "{{ cloudforms_username }}"
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
