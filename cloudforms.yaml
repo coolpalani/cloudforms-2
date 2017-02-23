@@ -6,7 +6,7 @@
   vars:
      openshift_domain: example.com
      openshift_domain_cloudapps: cloudapps.{{ openshift_domain }}
-     username: forumadmin
+     username: demo
      password: r3dh4t1!
      cloudforms_namespace: cloudforms
      cloudforms_username: admin
