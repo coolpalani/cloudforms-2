@@ -6,10 +6,8 @@
   vars:
      openshift_domain: example.com
      openshift_domain_cloudapps: cloudapps.{{ openshift_domain }}
-     username: demo
-     password: smartvm
-     openshift_metrics_username: demo
-     openshift_metrics_password: r3dh4t1!
+     username: forumadmin
+     password: r3dh4t1!
      cloudforms_namespace: cloudforms
      cloudforms_username: admin
      cloudforms_password: smartvm
@@ -117,7 +115,7 @@
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
          status_code: 200
-         body: '{"name": "Forum Admin","userid": "{{ username }}","password": "{{ password }}","email": "forumadmin@{{ openshift_domain }}","group": {"id": 2}}'
+         body: '{"name": "Forum Admin","userid": "{{ username }}","password": "{{ password }}","email": "{{ username }}@{{ openshift_domain }}","group": {"id": 2}}'
        tags:
             - install
             - configcloudforms
