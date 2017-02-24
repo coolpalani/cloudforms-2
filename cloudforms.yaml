@@ -115,7 +115,7 @@
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
          status_code: 200
-         body: '{"name": "Forum Admin","userid": "{{ username }}","password": "{{ password }}","email": "{{ username }}@{{ openshift_domain }}","group": {"id": 2}}'
+         body: '{"name": "Forum Admin","userid": "{{ username }}","password": "{{ password }}","email": "{{ username }}@{{ openshift_domain }}","group": {"id": 1000000000002}}'
        tags:
             - install
             - configcloudforms
