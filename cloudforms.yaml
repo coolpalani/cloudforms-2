@@ -156,4 +156,22 @@
        tags:
             - install
             - configcloudforms
-            - createproviderscloudforms    
+            - createproviderscloudforms 
+            
+     - name: Adding Ansible Tower Provider to CloudForms
+       uri:
+         method: POST
+         body_format: json
+         HEADER_Content-Type: application/json
+         validate_certs: no
+         return_content: yes
+         url: "{{ cloudforms_full_url }}/api/providers?provider_class=provider/"
+         user: "{{ cloudforms_username }}"
+         password: "{{ cloudforms_password }}"
+         force_basic_auth: yes
+         status_code: 200
+         body: '{"type":"ManageIQ::Providers::AnsibleTower::Provider","tenant_id":1000000000002,"name":"Ansible Tower","credentials": {"userid":"admin","password":"password"}}'
+       tags:
+            - install
+            - configcloudforms
+            - createproviderscloudforms
