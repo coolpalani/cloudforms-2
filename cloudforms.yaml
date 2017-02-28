@@ -170,7 +170,7 @@
          password: "{{ cloudforms_password }}"
          force_basic_auth: yes
          status_code: 200
-         body: '{"type":"ManageIQ::Providers::AnsibleTower::Provider","name":"Ansible Tower 3","url":"https://tower.ansible-tower.svc.cluster.local","credentials": {"userid":"admin","password":"password"}}'
+         body: '{"type":"ManageIQ::Providers::AnsibleTower::Provider","name":"Ansible Tower 3","url":"http://tower.ansible-tower.svc.cluster.local/api/v1","credentials": {"userid":"admin","password":"password"}}'
        tags:
             - install
             - configcloudforms
