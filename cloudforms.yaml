@@ -119,8 +119,7 @@
        tags:
             - install
             - configcloudforms
-            - createuserscloudforms
-            
+            - createuserscloudforms        
        
      - name: Adding Red Hat Forum LATAM 2016 Tenant to CloudForms
        uri:
@@ -175,3 +174,22 @@
             - install
             - configcloudforms
             - createproviderscloudforms
+ 
+
+     - name: Adding Service Catalog to CloudForms
+       uri:
+         method: POST
+         body_format: json
+         HEADER_Content-Type: application/json
+         validate_certs: no
+         return_content: yes
+         url: "{{ cloudforms_full_url }}/api/service_catalogs"
+         user: "{{ cloudforms_username }}"
+         password: "{{ cloudforms_password }}"
+         force_basic_auth: yes
+         status_code: 200
+         body: '{"action": "create","resource": {"name": "Ansible Tower Service Catalog","description": "Run Job Templates via Ansible Tower Service Catalog"}}'
+       tags:
+            - install
+            - configcloudforms
+            - createcatalogscloudforms
